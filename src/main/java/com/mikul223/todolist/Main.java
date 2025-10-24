@@ -217,7 +217,7 @@ public class Main {
         if (tasks.isEmpty()) {
             System.out.println("Задачи с статусом '" + status + "' не найдены.");
         } else {
-            System.out.println("\n=== Задачи со статусом '" + status + "' ===");
+            System.out.println("\n    Задачи со статусом '" + status + "'    ");
             for (TTask task : tasks) {
                 System.out.println(task);
             }
@@ -229,7 +229,7 @@ public class Main {
         if (overdueTasks.isEmpty()) {
             System.out.println("Просроченных задач нет.");
         } else {
-            System.out.println("\n=== Просроченные задачи ===");
+            System.out.println("\n    Просроченные задачи    ");
             for (TTask task : overdueTasks) {
                 System.out.println("⚠ " + task);
             }
@@ -241,7 +241,7 @@ public class Main {
         if (importantTasks.isEmpty()) {
             System.out.println("Важных задач нет.");
         } else {
-            System.out.println("\n=== Важные задачи ===");
+            System.out.println("\n    Важные задачи    ");
             for (TTask task : importantTasks) {
                 System.out.println(task);
             }
@@ -253,7 +253,7 @@ public class Main {
         if (sortedTasks.isEmpty()) {
             System.out.println("Список задач пуст.");
         } else {
-            System.out.println("\n=== Задачи отсортированные по приоритету ===");
+            System.out.println("\n    Задачи отсортированные по приоритету    ");
             for (TTask task : sortedTasks) {
                 System.out.println(task);
             }
@@ -265,7 +265,7 @@ public class Main {
         if (sortedTasks.isEmpty()) {
             System.out.println("Список задач пуст.");
         } else {
-            System.out.println("\n=== Задачи отсортированные по срочности ===");
+            System.out.println("\n    Задачи отсортированные по срочности    ");
             for (TTask task : sortedTasks) {
                 System.out.println("[" + task.getUrgencyScore() + "] " + task);
             }
@@ -277,7 +277,7 @@ public class Main {
         if (sortedTasks.isEmpty()) {
             System.out.println("Список задач пуст.");
         } else {
-            System.out.println("\n=== Задачи отсортированные по дате выполнения ===");
+            System.out.println("\n   Задачи отсортированные по дате выполнения    ");
             for (TTask task : sortedTasks) {
                 System.out.println(task);
             }
@@ -292,7 +292,7 @@ public class Main {
         if (tasks.isEmpty()) {
             System.out.println("Задачи не найдены.");
         } else {
-            System.out.println("\n=== Результаты поиска ===");
+            System.out.println("\n   Результаты поиска    ");
             for (TTask task : tasks) {
                 System.out.println(task);
             }
