@@ -96,7 +96,7 @@ public class Main {
             System.out.println("Список задач пуст.");
         }
         else {
-            System.out.println("\n=== Все задачи ===");
+            System.out.println("\n    Все задачи    ");
             for (TTask task : tasks) {
                 System.out.println(task);
             }
@@ -114,17 +114,40 @@ public class Main {
 
         System.out.print("Добавить срок выполнения? (да/нет): ");
         if (scanner.nextLine().equalsIgnoreCase("да")) {
-            System.out.print("Введите срок выполнения (гггг-мм-дд): ");
-            LocalDate dueDate = LocalDate.parse(scanner.nextLine());
 
-            System.out.print("Введите приоритет (1-5): ");
-            int priority = scanner.nextInt();
-            scanner.nextLine();
+            LocalDate dueDate = null;
+            boolean validDate = false;
 
-            System.out.print("Введите категорию: ");
-            String category = scanner.nextLine();
+            while (!validDate) {
+                try {
+                    System.out.print("Введите срок выполнения (гггг-мм-дд) или '0' для отмены: ");
+                    String dateInput = scanner.nextLine();
 
-            todoList.addTask(title, description, dueDate, priority, category);
+                    if (dateInput.equalsIgnoreCase("0")) {
+                        System.out.println("Отмена добавления даты.");
+                        break;
+                    }
+
+                    dueDate = LocalDate.parse(dateInput);
+                    validDate = true;
+
+                } catch (Exception e) {
+                    System.out.println(" Неверный формат даты! ");
+                    System.out.println(" Попробуйте снова или ведите '0' чтобы добавить задачу без даты");
+                }
+            }
+            if (!validDate) {
+                todoList.addTask(title, description);
+            } else {
+                System.out.print("Введите приоритет (1-5): ");
+                int priority = scanner.nextInt();
+                scanner.nextLine();
+
+                System.out.print("Введите категорию: ");
+                String category = scanner.nextLine();
+
+                todoList.addTask(title, description, dueDate, priority, category);
+            }
         }
         else {
             todoList.addTask(title, description);
@@ -132,8 +155,9 @@ public class Main {
         System.out.println("Задача добавлена успешно!");
     }
 
+
     private static void findTaskById() {
-        System.out.print("Введите ID задачи: ");
+        System.out.print("Введите ID задачи для поиска: ");
         int id = scanner.nextInt();
         scanner.nextLine();
 
@@ -161,6 +185,7 @@ public class Main {
         System.out.println("1. Изменить статус");
         System.out.println("2. Изменить приоритет");
         System.out.println("3. Изменить срок выполнения");
+        System.out.println("0. Выйти");
         System.out.print("Выберите опцию: ");
 
         int choice = scanner.nextInt();
@@ -187,13 +212,34 @@ public class Main {
                 }
                 break;
             case 3:
-                System.out.print("Введите новый срок (гггг-мм-дд): ");
-                LocalDate dueDate = LocalDate.parse(scanner.nextLine());
-                task.setDueDate(dueDate);
-                System.out.println("Срок выполнения обновлен.");
+                LocalDate dueDate = null;
+                boolean validDate = false;
+
+                while (!validDate) {
+                    try {
+                        System.out.print("Введите новый срок (гггг-мм-дд) или '0' для отмены: ");
+                        String dateInput = scanner.nextLine();
+
+                        if (dateInput.equalsIgnoreCase("0")) {
+                            System.out.println("Отмена изменения даты.");
+                            break;
+                        }
+
+                        dueDate = LocalDate.parse(dateInput);
+                        validDate = true;
+
+                    }
+                    catch (Exception e) {
+                        System.out.println(" Неверный формат даты!");
+                        System.out.println(" Попробуйте снова или введите '0' чтобы отменить изменение даты");
+                    }
+                }
+
+                if (validDate) {
+                    task.setDueDate(dueDate);
+                    System.out.println("Срок выполнения обновлен.");
+                }
                 break;
-            default:
-                System.out.println("Неверный выбор.");
         }
     }
 
@@ -252,8 +298,9 @@ public class Main {
         List<TTask> sortedTasks = todoList.sortByPriority();
         if (sortedTasks.isEmpty()) {
             System.out.println("Список задач пуст.");
-        } else {
-            System.out.println("\n    Задачи отсортированные по приоритету    ");
+        }
+        else {
+            System.out.println("\n   Задачи отсортированные по приоритету    ");
             for (TTask task : sortedTasks) {
                 System.out.println(task);
             }
@@ -264,7 +311,8 @@ public class Main {
         List<TTask> sortedTasks = todoList.sortByUrgency();
         if (sortedTasks.isEmpty()) {
             System.out.println("Список задач пуст.");
-        } else {
+        }
+        else {
             System.out.println("\n    Задачи отсортированные по срочности    ");
             for (TTask task : sortedTasks) {
                 System.out.println("[" + task.getUrgencyScore() + "] " + task);
@@ -276,7 +324,8 @@ public class Main {
         List<TTask> sortedTasks = todoList.sortByDueDate();
         if (sortedTasks.isEmpty()) {
             System.out.println("Список задач пуст.");
-        } else {
+        }
+        else {
             System.out.println("\n   Задачи отсортированные по дате выполнения    ");
             for (TTask task : sortedTasks) {
                 System.out.println(task);
@@ -291,7 +340,8 @@ public class Main {
         List<TTask> tasks = todoList.searchTasks(keyword);
         if (tasks.isEmpty()) {
             System.out.println("Задачи не найдены.");
-        } else {
+        }
+        else {
             System.out.println("\n   Результаты поиска    ");
             for (TTask task : tasks) {
                 System.out.println(task);
@@ -306,8 +356,9 @@ public class Main {
         List<TTask> tasks = todoList.searchTasksByCategory(category);
         if (tasks.isEmpty()) {
             System.out.println("Задачи в категории '" + category + "' не найдены.");
-        } else {
-            System.out.println("\n=== Задачи в категории '" + category + "' ===");
+        }
+        else {
+            System.out.println("\n Задачи в категории '" + category + "' ");
             for (TTask task : tasks) {
                 System.out.println(task);
             }
