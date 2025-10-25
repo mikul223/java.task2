@@ -26,6 +26,7 @@ public class Main {
         showMainMenu();
     }
 
+    // Главное меню. Управление состоянием через цикл и switch
     private static void showMainMenu() {
         while (true) {
             System.out.println("\n   Главное меню   ");
@@ -125,6 +126,7 @@ public class Main {
         }
     }
 
+    //Добавление новой задачи
     private static void addNewTask() {
         System.out.println("\n   Добавление новой задачи   ");
         System.out.print("Введите название: ");
@@ -139,6 +141,8 @@ public class Main {
             LocalDate dueDate = null;
             boolean validDate = false;
 
+
+            //Цикл валидации даты с возможностью отмены
             while (!validDate) {
                 try {
                     System.out.print("Введите срок выполнения (гггг-мм-дд) или '0' для отмены: ");
@@ -160,7 +164,8 @@ public class Main {
             }
             if (!validDate) {
                 todoList.addTask(title, description);
-            } else {
+            }
+            else {
                 System.out.print("Введите приоритет (TTask.MIN_PRIORITY-TTask.MAX_PRIORITY): ");
                 int priority = scanner.nextInt();
                 scanner.nextLine();
@@ -192,6 +197,7 @@ public class Main {
         }
     }
 
+    //Редактирование задачи с выбором атрибута для изменения. Меню редактирования с разными типами данных
     private static void editTask() {
         System.out.print("Введите ID задачи для редактирования: ");
         int id = scanner.nextInt();

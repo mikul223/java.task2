@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 public class TTask {
 
+    // Константы для системы приоритетов и срочности
     public static final int MIN_PRIORITY = 1;
     public static final int MAX_PRIORITY = 5;
     public static final int HIGH_PRIORITY_THRESHOLD = 4;
@@ -17,6 +18,7 @@ public class TTask {
     public static final int SOON_BONUS = 5;
 
 
+    // Поля класса
     private int id;
     private String title;
     private String description;
@@ -27,7 +29,7 @@ public class TTask {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-
+    // Конструктор для базовой задачи
     public TTask(int id, String title, String description){
         this.id = id;
         this.title = title;
@@ -40,6 +42,7 @@ public class TTask {
 
     }
 
+    // Конструктор для задачи с дополнительными параметрами
     public TTask( int id, String title, String description, LocalDate dueDate, int priority, String category){
         this(id, title, description);
         this.dueDate = dueDate;
@@ -49,7 +52,7 @@ public class TTask {
     }
 
 
-    //g
+    //Геттеры
 
     public int getId() {
         return id;
@@ -57,9 +60,12 @@ public class TTask {
     public String getTitle() {
         return title;
     }
+    /*
     public String getDescription() {
         return description;
     }
+
+     */
     public String getStatus() {
         return status;
     }
@@ -72,26 +78,36 @@ public class TTask {
     public String getCategory() {
         return category;
     }
+    /*
+
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
+
+
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
 
+     */
 
-    //s
 
+    //Сеттеры с обновлением времени изменения
+
+    /*
     public void setTitle(String title) {
         this.title = title;
         this.updatedAt = LocalDateTime.now();
     }
+
 
     public void setDescription(String description) {
         this.description = description;
         this.updatedAt = LocalDateTime.now();
     }
 
+     */
     public void setStatus(String status) {
         if (isValidStatus(status)) {
             this.status = status;
@@ -102,11 +118,14 @@ public class TTask {
         }
     }
 
+    // Установка статуса с валидацией. Проверка допустимых значений статуса
     public void setDueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
         this.updatedAt = LocalDateTime.now();
     }
 
+
+    // Установка приоритета с валидацией диапазона. Проверка граничных значений
     public void setPriority(int priority) {
         if (priority >= MIN_PRIORITY && priority <= MAX_PRIORITY) {
             this.priority = priority;
@@ -116,12 +135,14 @@ public class TTask {
             throw new IllegalArgumentException("Priority must be between 1 and 5");
         }
     }
-
+    /*
     public void setCategory(String category) {
         this.category = category;
         this.updatedAt = LocalDateTime.now();
     }
 
+     */
+    //Проверка просроченности задачи
     public boolean isOverdue() {
         return dueDate != null && dueDate.isBefore(LocalDate.now()) && !"DONE".equals(status);
     }
@@ -129,15 +150,19 @@ public class TTask {
         return priority >= HIGH_PRIORITY_THRESHOLD;
     }
 
+    //Методы для быстрого изменения статуса
     public void markAsDone() {
         setStatus("DONE");
     }
 
+    /*
     public void markAsInProgress() {
         setStatus("IN_PROGRESS");
     }
 
+     */
 
+    //Форматированное строковое представление задачи
     @Override
     public String toString() {
         String dueInfo = dueDate != null ?
@@ -145,7 +170,9 @@ public class TTask {
         return String.format("Task #%d: %s [%s] | Priority: %d/5 | Category: %s | Due: %s", id, title, status, priority, category, dueInfo);
     }
 
-
+    /* Расчет баллов срочности для сортировки. Формула с учетом приоритета, просроченности и времени до дедлайна.
+    Баллы за приоритет + баллы за просроченность + баллы за близость дедлайна
+    */
     public int getUrgencyScore() {
         int score = 0;
 
@@ -170,7 +197,7 @@ public class TTask {
     }
 
 
-
+//Валидация статуса задачи
     private boolean isValidStatus(String status) {
         return status != null &&
                 (status.equals("TODO") ||

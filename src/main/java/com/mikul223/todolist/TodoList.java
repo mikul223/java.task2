@@ -3,13 +3,8 @@ package com.mikul223.todolist;
 import java.time.LocalDate;
 import java.util.*;
 
-/*
-public enum TaskStatus {
-    TODO,
-    IN_PROGRESS,
-    DONE
-}
-*/
+
+
 
 
 public class TodoList {
@@ -21,7 +16,7 @@ public class TodoList {
         this.nextId = 1;
     }
 
-
+    //Методы добавления задач
     public void addTask(String title, String description) {
         TTask task = new TTask(nextId, title, description);
         tasks.add(task);
@@ -40,7 +35,7 @@ public class TodoList {
 
 
 
-
+    //Поиск задачи по ID
     public TTask getTaskById(int id) {
         for (TTask task : tasks) {
             if (task.getId() == id) {
@@ -60,7 +55,7 @@ public class TodoList {
         return false;
     }
 
-
+    //Получение задач по статусу
     public List<TTask> getTasksByStatus(String status) {
         List<TTask> result = new ArrayList<>();
         if (status == null) {
@@ -95,7 +90,7 @@ public class TodoList {
         return result;
     }
 
-    // приоритет убывание
+    // Сортировка пузырьком по приоритету (по убыванию)
     public List<TTask> sortByPriority() {
         List<TTask> sorted = new ArrayList<>(tasks);
         for (int i = 0; i < sorted.size() - 1; i++) {
@@ -110,7 +105,7 @@ public class TodoList {
         return sorted;
     }
 
-    // срочность
+    // Сортировка по срочности
     public List<TTask> sortByUrgency() {
         List<TTask> sorted = new ArrayList<>(tasks);
         sorted.sort((t1, t2) -> {
@@ -121,7 +116,7 @@ public class TodoList {
         return sorted;
     }
 
-    // data
+    // Сортировка по дате выполнения. Задачи без даты в конец, с датой в начало
     public List<TTask> sortByDueDate() {
         List<TTask> sorted = new ArrayList<>(tasks);
         sorted.sort((t1, t2) -> {
@@ -133,6 +128,7 @@ public class TodoList {
         return sorted;
     }
 
+    //Поиск задач по названию
     public List<TTask> searchTasks(String search) {
         List<TTask> result = new ArrayList<>();
         if (search == null) {
@@ -147,7 +143,7 @@ public class TodoList {
         return result;
     }
 
-
+/*
     //на будущее мб. интерфейс
     public void markTaskDone(int id) {
         TTask task = getTaskById(id);
@@ -155,6 +151,8 @@ public class TodoList {
             task.markAsDone();
         }
     }
+
+ */
 
     public int getTotalTasks() {
         return tasks.size();
@@ -172,8 +170,7 @@ public class TodoList {
     }
 
 
-    // обновляет статус
-
+    // Обновление статуса с обработкой исключений
     public boolean updateTaskStatus(int id, String status) {
         TTask task = getTaskById(id);
         if (task != null) {
@@ -189,7 +186,7 @@ public class TodoList {
     }
 
 
-    //обновл приоритет
+    //Обновление приоритета с обработкой исключений
 
     public boolean updateTaskPriority(int id, int priority) {
         TTask task = getTaskById(id);
@@ -207,7 +204,7 @@ public class TodoList {
 
 
 
-    //ищет задачи по категории
+    //Поиск по категории (регистронезависимый)
 
     public List<TTask> searchTasksByCategory(String category) {
         List<TTask> result = new ArrayList<>();
