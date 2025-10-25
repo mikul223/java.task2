@@ -8,6 +8,13 @@ public class Main {
     private static TodoList todoList = new TodoList();
     private static Scanner scanner = new Scanner(System.in);
 
+
+    private static void waitForEnter() {
+        System.out.print("\n Нажмите Enter чтобы продолжить...");
+        scanner.nextLine();
+    }
+
+
     public static void main(String[] args) {
         System.out.println("  To-Do List Application  ");
 
@@ -24,15 +31,15 @@ public class Main {
             System.out.println("\n   Главное меню   ");
             System.out.println("1. Показать все задачи");
             System.out.println("2. Добавить задачу");
-            System.out.println("3. Найти задачу по ID"); // в конец ?
-            System.out.println("4. Редактировать задачу");
-            System.out.println("5. Удалить задачу");
-            System.out.println("6. Показать задачи по статусу");
-            System.out.println("7. Показать просроченные задачи");
-            System.out.println("8. Показать важные задачи");
-            System.out.println("9. Сортировать по приоритету");
-            System.out.println("10. Сортировать по срочности");
-            System.out.println("11. Сортировать по дате выполнения");
+            System.out.println("3. Редактировать задачу");
+            System.out.println("4. Удалить задачу");
+            System.out.println("5. Показать задачи по статусу");
+            System.out.println("6. Показать просроченные задачи");
+            System.out.println("7. Показать важные задачи");
+            System.out.println("8. Сортировать по приоритету");
+            System.out.println("9. Сортировать по срочности");
+            System.out.println("10. Сортировать по дате выполнения");
+            System.out.println("11. Найти задачу по ID");
             System.out.println("12. Поиск по названию");
             System.out.println("13. Поиск по категории");
             System.out.println("0. Выйти");
@@ -44,48 +51,62 @@ public class Main {
             switch (choice) {
                 case 1:
                     showAllTasks();
+                    waitForEnter();
                     break;
                 case 2:
                     addNewTask();
+                    waitForEnter();
                     break;
                 case 3:
-                    findTaskById();
+                    editTask();
+                    waitForEnter();
                     break;
                 case 4:
-                    editTask();
+                    deleteTask();
+                    waitForEnter();
                     break;
                 case 5:
-                    deleteTask();
+                    showTasksByStatus();
+                    waitForEnter();
                     break;
                 case 6:
-                    showTasksByStatus();
+                    showOverdueTasks();
+                    waitForEnter();
                     break;
                 case 7:
-                    showOverdueTasks();
+                    showImportantTasks();
+                    waitForEnter();
                     break;
                 case 8:
-                    showImportantTasks();
+                    showTasksSortedByPriority();
+                    waitForEnter();
                     break;
                 case 9:
-                    showTasksSortedByPriority();
+                    showTasksSortedByUrgency();
+                    waitForEnter();
                     break;
                 case 10:
-                    showTasksSortedByUrgency();
+                    showTasksSortedByDueDate();
+                    waitForEnter();
                     break;
                 case 11:
-                    showTasksSortedByDueDate();
+                    findTaskById();
+                    waitForEnter();
                     break;
                 case 12:
                     searchTasksByTitle();
+                    waitForEnter();
                     break;
                 case 13:
                     searchTasksByCategory();
+                    waitForEnter();
                     break;
                 case 0:
                     System.out.println("Выход из приложения...");
                     return;
                 default:
                     System.out.println("Неверный выбор :(");
+                    waitForEnter();
             }
         }
     }
@@ -125,6 +146,7 @@ public class Main {
 
                     if (dateInput.equalsIgnoreCase("0")) {
                         System.out.println("Отмена добавления даты.");
+
                         break;
                     }
 
@@ -240,6 +262,12 @@ public class Main {
                     System.out.println("Срок выполнения обновлен.");
                 }
                 break;
+            case 0:
+                System.out.println("Возврат в главное меню...");
+                break;
+            default:
+                System.out.println(" Ошибка: опция " + choice + " не существует!");
+                System.out.println("   Доступные опции: 1, 2, 3, 0");
         }
     }
 
