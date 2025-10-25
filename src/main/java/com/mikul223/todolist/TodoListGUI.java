@@ -194,6 +194,9 @@ public class TodoListGUI {
         addButton.setForeground(Color.WHITE);
         addButton.setFocusPainted(false);
         addButton.setPreferredSize(new Dimension(140, 35));
+        addButton.addActionListener(e -> {
+            showAddTaskDialog();
+        });
 
         JButton editButton = new JButton("Изменить");
         editButton.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -201,6 +204,9 @@ public class TodoListGUI {
         editButton.setForeground(Color.WHITE);
         editButton.setFocusPainted(false);
         editButton.setPreferredSize(new Dimension(140, 35));
+        editButton.addActionListener(e -> {
+            editSelectedTask();
+        });
 
         JButton deleteButton = new JButton("Удалить");
         deleteButton.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -208,6 +214,9 @@ public class TodoListGUI {
         deleteButton.setForeground(Color.WHITE);
         deleteButton.setFocusPainted(false);
         deleteButton.setPreferredSize(new Dimension(140, 35));
+        deleteButton.addActionListener(e -> {
+            deleteSelectedTask();
+        });
 
         topButtonPanel.add(addButton);
         topButtonPanel.add(editButton);
@@ -279,7 +288,219 @@ public class TodoListGUI {
         refreshTasksTable();
     }
 
+    private void showAddTaskDialog() {
+        JDialog addDialog = new JDialog(mainFrame, "Добавить новую задачу", true);
+        addDialog.setLayout(new BorderLayout());
+        addDialog.setSize(400, 400);
+        addDialog.setLocationRelativeTo(mainFrame);
 
+        JPanel formPanel = new JPanel(new GridLayout(0, 2, 5, 5));
+        formPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        // Поля формы
+        JTextField titleField = new JTextField();
+        JTextArea descriptionArea = new JTextArea(3, 20);
+        JScrollPane descriptionScroll = new JScrollPane(descriptionArea);
+        JTextField dueDateField = new JTextField();
+        JSpinner prioritySpinner = new JSpinner(new SpinnerNumberModel(3, 1, 5, 1));
+        JTextField categoryField = new JTextField("General");
+
+        formPanel.add(new JLabel("Название*:"));
+        formPanel.add(titleField);
+        formPanel.add(new JLabel("Описание:"));
+        formPanel.add(descriptionScroll);
+        formPanel.add(new JLabel("Срок (гггг-мм-дд):"));
+        formPanel.add(dueDateField);
+        formPanel.add(new JLabel("Приоритет (1-5):"));
+        formPanel.add(prioritySpinner);
+        formPanel.add(new JLabel("Категория:"));
+        formPanel.add(categoryField);
+
+        // Панель с кнопками
+        JPanel buttonPanel = new JPanel();
+        JButton saveButton = new JButton("Сохранить");
+        JButton cancelButton = new JButton("Отмена");
+
+        saveButton.addActionListener(e -> {
+            try {
+                String title = titleField.getText().trim();
+                if (title.isEmpty()) {
+                    JOptionPane.showMessageDialog(addDialog, "Название задачи не может быть пустым!",
+                            "Ошибка", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                String description = descriptionArea.getText().trim();
+                String dueDateText = dueDateField.getText().trim();
+                int priority = (Integer) prioritySpinner.getValue();
+                String category = categoryField.getText().trim();
+
+                // Методы из TodoList
+                if (dueDateText.isEmpty()) {
+                    todoList.addTask(title, description);
+                } else {
+                    java.time.LocalDate dueDate = java.time.LocalDate.parse(dueDateText);
+                    todoList.addTask(title, description, dueDate, priority, category);
+                }
+
+                refreshTasksTable();
+                addDialog.dispose();
+                JOptionPane.showMessageDialog(mainFrame, "Задача добавлена успешно! :)", "Успех",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(addDialog, "Ошибка при добавлении задачи: " + ex.getMessage(),
+                        "Ошибка", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        cancelButton.addActionListener(e -> addDialog.dispose());
+
+        buttonPanel.add(saveButton);
+        buttonPanel.add(cancelButton);
+
+        addDialog.add(formPanel, BorderLayout.CENTER);
+        addDialog.add(buttonPanel, BorderLayout.SOUTH);
+        addDialog.setVisible(true);
+    }
+
+    // Редактирование выбранной задачи
+    private void editSelectedTask() {
+        int selectedRow = tasksTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(mainFrame, "Пожалуйста, выберите задачу для редактирования!",
+                    "Ошибка", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int taskId = (Integer) tableModel.getValueAt(selectedRow, 0);
+        Task task = todoList.getTaskById(taskId);
+
+        if (task == null) {
+            JOptionPane.showMessageDialog(mainFrame, "Задача не найдена!", "Ошибка",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        showEditTaskDialog(task);
+    }
+
+    // Редактирование задачи
+    private void showEditTaskDialog(Task task) {
+        JDialog editDialog = new JDialog(mainFrame, "Редактирование задачи", true);
+        editDialog.setLayout(new BorderLayout());
+        editDialog.setSize(400, 400);
+        editDialog.setLocationRelativeTo(mainFrame);
+
+        JPanel formPanel = new JPanel(new GridLayout(0, 2, 5, 5));
+        formPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        // Поля формы с текущими значениями
+        JLabel idLabel = new JLabel(String.valueOf(task.getId()));
+        JTextField titleField = new JTextField(task.getTitle());
+        JTextArea descriptionArea = new JTextArea(task.getDescription(), 3, 20);
+        JScrollPane descriptionScroll = new JScrollPane(descriptionArea);
+
+        JComboBox<String> statusCombo = new JComboBox<>(new String[]{"TODO", "IN_PROGRESS", "DONE"});
+        statusCombo.setSelectedItem(task.getStatus());
+
+        JSpinner prioritySpinner = new JSpinner(new SpinnerNumberModel(task.getPriority(),
+                1, 5, 1));
+
+        JTextField dueDateField = new JTextField(
+                task.getDueDate() != null ? task.getDueDate().toString() : ""
+        );
+
+        JTextField categoryField = new JTextField(task.getCategory());
+
+        formPanel.add(new JLabel("ID:"));
+        formPanel.add(idLabel);
+        formPanel.add(new JLabel("Название*:"));
+        formPanel.add(titleField);
+        formPanel.add(new JLabel("Описание:"));
+        formPanel.add(descriptionScroll);
+        formPanel.add(new JLabel("Статус:"));
+        formPanel.add(statusCombo);
+        formPanel.add(new JLabel("Приоритет:"));
+        formPanel.add(prioritySpinner);
+        formPanel.add(new JLabel("Срок:"));
+        formPanel.add(dueDateField);
+        formPanel.add(new JLabel("Категория:"));
+        formPanel.add(categoryField);
+
+        JPanel buttonPanel = new JPanel();
+        JButton saveButton = new JButton("Сохранить");
+        JButton cancelButton = new JButton("Отмена");
+
+        saveButton.addActionListener(e -> {
+            try {
+                // Обновление задачи через методы TodoList
+                String newStatus = (String) statusCombo.getSelectedItem();
+                int newPriority = (Integer) prioritySpinner.getValue();
+
+                String dueDateText = dueDateField.getText().trim();
+                if (!dueDateText.isEmpty()) {
+                    java.time.LocalDate newDueDate = java.time.LocalDate.parse(dueDateText);
+                    todoList.updateTaskDueDate(task.getId(), newDueDate);
+                } else {
+                    todoList.updateTaskDueDate(task.getId(), null);
+                }
+
+                todoList.updateTaskStatus(task.getId(), newStatus);
+                todoList.updateTaskPriority(task.getId(), newPriority);
+
+                refreshTasksTable();
+                editDialog.dispose();
+                JOptionPane.showMessageDialog(mainFrame, "Задача обновлена успешно! :)",
+                        "Успех", JOptionPane.INFORMATION_MESSAGE);
+
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(editDialog, "Ошибка при обновлении задачи: " +
+                        ex.getMessage(), "Ошибка", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        cancelButton.addActionListener(e -> editDialog.dispose());
+
+        buttonPanel.add(saveButton);
+        buttonPanel.add(cancelButton);
+
+        editDialog.add(formPanel, BorderLayout.CENTER);
+        editDialog.add(buttonPanel, BorderLayout.SOUTH);
+        editDialog.setVisible(true);
+    }
+
+    // Удаление выбранной задачи
+    private void deleteSelectedTask() {
+        int selectedRow = tasksTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(mainFrame, "Пожалуйста, выберите задачу для удаления!",
+                    "Ошибка", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        int taskId = (Integer) tableModel.getValueAt(selectedRow, 0);
+        String taskTitle = (String) tableModel.getValueAt(selectedRow, 1);
+
+        int confirm = JOptionPane.showConfirmDialog(
+                mainFrame,
+                "Вы уверены, что хотите удалить задачу:\n\"" + taskTitle + "\"?",
+                "Подтверждение удаления",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            // Используем метод deleteTask из TodoList (как в Main)
+            if (todoList.deleteTask(taskId)) {
+                refreshTasksTable();
+                JOptionPane.showMessageDialog(mainFrame, "Задача удалена успешно! :)",
+                        "Успех", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(mainFrame, "Ошибка при удалении задачи!",
+                        "Ошибка", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
