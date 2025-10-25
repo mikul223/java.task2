@@ -60,12 +60,7 @@ public class TTask {
     public String getTitle() {
         return title;
     }
-    /*
-    public String getDescription() {
-        return description;
-    }
 
-     */
     public String getStatus() {
         return status;
     }
@@ -78,36 +73,13 @@ public class TTask {
     public String getCategory() {
         return category;
     }
-    /*
 
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-     */
 
 
     //Сеттеры с обновлением времени изменения
 
-    /*
-    public void setTitle(String title) {
-        this.title = title;
-        this.updatedAt = LocalDateTime.now();
-    }
 
-
-    public void setDescription(String description) {
-        this.description = description;
-        this.updatedAt = LocalDateTime.now();
-    }
-
-     */
     public void setStatus(String status) {
         if (isValidStatus(status)) {
             this.status = status;
@@ -135,13 +107,7 @@ public class TTask {
             throw new IllegalArgumentException("Priority must be between 1 and 5");
         }
     }
-    /*
-    public void setCategory(String category) {
-        this.category = category;
-        this.updatedAt = LocalDateTime.now();
-    }
 
-     */
     //Проверка просроченности задачи
     public boolean isOverdue() {
         return dueDate != null && dueDate.isBefore(LocalDate.now()) && !"DONE".equals(status);
@@ -155,12 +121,7 @@ public class TTask {
         setStatus("DONE");
     }
 
-    /*
-    public void markAsInProgress() {
-        setStatus("IN_PROGRESS");
-    }
 
-     */
 
     //Форматированное строковое представление задачи
     @Override

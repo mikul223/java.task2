@@ -19,9 +19,9 @@ public class Main {
         System.out.println("  To-Do List Application  ");
 
         // Задачи тестовые
-        todoList.addTask("математика", "счет");
-        todoList.addTask("русский", "сочинение", LocalDate.now().plusDays(7), 4, "Учеба");
-        todoList.addTask("купить продукты", "молоко, хлеб, фрукты", LocalDate.now().plusDays(2), 2, "дом");
+        todoList.addTask("Математика", "Сделать домашнее задание");
+        todoList.addTask("Русский", "Написать сочинение", LocalDate.now().plusDays(7), 4, "Учеба");
+        todoList.addTask("Купить продукты", "Молоко, хлеб, фрукты", LocalDate.now().plusDays(2), 2, "Дом");
 
         showMainMenu();
     }
@@ -115,7 +115,7 @@ public class Main {
     private static void showAllTasks() {
         List<TTask> tasks = todoList.getAllTasks();
         if (tasks.isEmpty()) {
-            System.out.println("Список задач пуст.");
+            System.out.println("Список задач пуст :(");
         }
         else {
             System.out.println("\n    Все задачи    ");
@@ -158,7 +158,7 @@ public class Main {
                     validDate = true;
 
                 } catch (Exception e) {
-                    System.out.println(" Неверный формат даты! ");
+                    System.out.println(" Неверный формат даты :(");
                     System.out.println(" Попробуйте снова или ведите '0' чтобы добавить задачу без даты");
                 }
             }
@@ -179,7 +179,7 @@ public class Main {
         else {
             todoList.addTask(title, description);
         }
-        System.out.println("Задача добавлена успешно!");
+        System.out.println("Задача добавлена успешно! :)");
     }
 
 
@@ -224,9 +224,9 @@ public class Main {
                 System.out.print("Введите новый статус (TODO/IN_PROGRESS/DONE): ");
                 String status = scanner.nextLine();
                 if (todoList.updateTaskStatus(id, status)) {
-                    System.out.println("Статус обновлен.");
+                    System.out.println("Статус обновлен :)");
                 } else {
-                    System.out.println("Ошибка обновления статуса.");
+                    System.out.println("Ошибка обновления статуса :(");
                 }
                 break;
             case 2:
@@ -234,9 +234,9 @@ public class Main {
                 int priority = scanner.nextInt();
                 scanner.nextLine();
                 if (todoList.updateTaskPriority(id, priority)) {
-                    System.out.println("Приоритет обновлен.");
+                    System.out.println("Приоритет обновлен :)");
                 } else {
-                    System.out.println("Ошибка обновления приоритета.");
+                    System.out.println("Ошибка обновления приоритета :(");
                 }
                 break;
             case 3:
@@ -258,7 +258,7 @@ public class Main {
 
                     }
                     catch (Exception e) {
-                        System.out.println(" Неверный формат даты!");
+                        System.out.println(" Неверный формат даты! :(");
                         System.out.println(" Попробуйте снова или введите '0' чтобы отменить изменение даты");
                     }
                 }
@@ -268,7 +268,7 @@ public class Main {
                         System.out.println("Срок выполнения обновлен.");
                     }
                     else {
-                        System.out.println("Ошибка обновления срока выполнения.");
+                        System.out.println("Ошибка обновления срока выполнения :(");
                     }
                 }
                 break;
@@ -276,8 +276,8 @@ public class Main {
                 System.out.println("Возврат в главное меню...");
                 break;
             default:
-                System.out.println(" Ошибка: опция " + choice + " не существует!");
-                System.out.println("   Доступные опции: 1, 2, 3, 0");
+                System.out.println(" Ошибка: опция " + choice + " не существует :(");
+                System.out.println("   Доступные опции: 1, 2, 3, 0   ");
         }
     }
 
@@ -287,9 +287,9 @@ public class Main {
         scanner.nextLine();
 
         if (todoList.deleteTask(id)) {
-            System.out.println("Задача удалена успешно!");
+            System.out.println("Задача удалена успешно! :)");
         } else {
-            System.out.println("Задача с ID " + id + " не найдена.");
+            System.out.println("Задача с ID " + id + " не найдена :(");
         }
     }
 
@@ -299,7 +299,7 @@ public class Main {
 
         List<TTask> tasks = todoList.getTasksByStatus(status);
         if (tasks.isEmpty()) {
-            System.out.println("Задачи с статусом '" + status + "' не найдены.");
+            System.out.println("Задачи с статусом '" + status + "' не найдены :(");
         } else {
             System.out.println("\n    Задачи со статусом '" + status + "'    ");
             for (TTask task : tasks) {
@@ -311,7 +311,7 @@ public class Main {
     private static void showOverdueTasks() {
         List<TTask> overdueTasks = todoList.getOverdueTasks();
         if (overdueTasks.isEmpty()) {
-            System.out.println("Просроченных задач нет.");
+            System.out.println("Просроченных задач нет! :)");
         } else {
             System.out.println("\n    Просроченные задачи    ");
             for (TTask task : overdueTasks) {
@@ -323,7 +323,7 @@ public class Main {
     private static void showImportantTasks() {
         List<TTask> importantTasks = todoList.getImportantTasks();
         if (importantTasks.isEmpty()) {
-            System.out.println("Важных задач нет.");
+            System.out.println("Важных задач нет! :)");
         } else {
             System.out.println("\n    Важные задачи    ");
             for (TTask task : importantTasks) {
@@ -335,7 +335,7 @@ public class Main {
     private static void showTasksSortedByPriority() {
         List<TTask> sortedTasks = todoList.sortByPriority();
         if (sortedTasks.isEmpty()) {
-            System.out.println("Список задач пуст.");
+            System.out.println("Список задач пуст :(");
         }
         else {
             System.out.println("\n   Задачи отсортированные по приоритету    ");
@@ -348,7 +348,7 @@ public class Main {
     private static void showTasksSortedByUrgency() {
         List<TTask> sortedTasks = todoList.sortByUrgency();
         if (sortedTasks.isEmpty()) {
-            System.out.println("Список задач пуст.");
+            System.out.println("Список задач пуст :(");
         }
         else {
             System.out.println("\n    Задачи отсортированные по срочности    ");
@@ -361,7 +361,7 @@ public class Main {
     private static void showTasksSortedByDueDate() {
         List<TTask> sortedTasks = todoList.sortByDueDate();
         if (sortedTasks.isEmpty()) {
-            System.out.println("Список задач пуст.");
+            System.out.println("Список задач пуст :(");
         }
         else {
             System.out.println("\n   Задачи отсортированные по дате выполнения    ");
@@ -377,7 +377,7 @@ public class Main {
 
         List<TTask> tasks = todoList.searchTasks(keyword);
         if (tasks.isEmpty()) {
-            System.out.println("Задачи не найдены.");
+            System.out.println("Задачи не найдены :(");
         }
         else {
             System.out.println("\n   Результаты поиска    ");
@@ -397,7 +397,7 @@ public class Main {
         }
         List<TTask> tasks = todoList.searchTasksByCategory(category);
         if (tasks.isEmpty()) {
-            System.out.println("Задачи в категории '" + category + "' не найдены.");
+            System.out.println("Задачи в категории '" + category + "' не найдены :(");
         }
         else {
             System.out.println("\n Задачи в категории '" + category + "' ");
