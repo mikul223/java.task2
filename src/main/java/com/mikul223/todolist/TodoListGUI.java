@@ -7,6 +7,7 @@ import javax.swing.ListSelectionModel;
 import java.util.List;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.util.ArrayList;
 
 public class TodoListGUI {
     private JFrame mainFrame;
@@ -237,6 +238,9 @@ public class TodoListGUI {
         sortButton.setFocusPainted(false);
         sortButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         sortButton.setMaximumSize(new Dimension(140, 35));
+        sortButton.addActionListener(e -> {
+            showSortDialog();
+        });
 
         JButton searchButton = new JButton("Найти");
         searchButton.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -245,6 +249,9 @@ public class TodoListGUI {
         searchButton.setFocusPainted(false);
         searchButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         searchButton.setMaximumSize(new Dimension(140, 35));
+        searchButton.addActionListener(e -> {
+            showSearchDialog();
+        });
 
         leftButtonsPanel.add(Box.createVerticalStrut(5));
         leftButtonsPanel.add(sortButton);
@@ -259,6 +266,9 @@ public class TodoListGUI {
         importantButton.setForeground(Color.WHITE);
         importantButton.setFocusPainted(false);
         importantButton.setPreferredSize(new Dimension(120, 70));
+        importantButton.addActionListener(e -> {
+            showImportantTasksDialog();
+        });
 
         bottomButtonPanel.add(leftButtonsPanel);
         bottomButtonPanel.add(importantButton);
@@ -501,6 +511,183 @@ public class TodoListGUI {
             }
         }
     }
+
+    // Диалог выбора сортировки
+    private void showSortDialog() {
+        String[] options = {"Приоритет", "Срочность", "Дата выполнения"};
+
+        String choice = (String) JOptionPane.showInputDialog(
+                mainFrame,
+                "Выберите тип сортировки:",
+                "Сортировка задач",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        if (choice != null) {
+            List<Task> sortedTasks;
+
+            switch (choice) {
+                case "Приоритет":
+                    sortedTasks = todoList.sortByPriority();
+                    break;
+                case "Срочность":
+                    sortedTasks = todoList.sortByUrgency();
+                    break;
+                case "Дата выполнения":
+                    sortedTasks = todoList.sortByDueDate();
+                    break;
+                default:
+                    sortedTasks = todoList.getAllTasks();
+            }
+
+            refreshTasksTableWithData(sortedTasks);
+            JOptionPane.showMessageDialog(mainFrame,
+                    "Задачи отсортированы по: " + choice,
+                    "Сортировка",
+                    JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+    // Диалог поиска задач
+    private void showSearchDialog() {
+        String[] searchOptions = {"ID", "Название", "Категория", "Статус"};
+
+        String searchType = (String) JOptionPane.showInputDialog(
+                mainFrame,
+                "Выберите тип поиска:",
+                "Поиск задач",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                searchOptions,
+                searchOptions[0]
+        );
+
+        if (searchType != null) {
+            String searchValue = JOptionPane.showInputDialog(
+                    mainFrame,
+                    "Введите значение для поиска:",
+                    "Поиск по " + searchType,
+                    JOptionPane.QUESTION_MESSAGE
+            );
+
+            if (searchValue != null && !searchValue.trim().isEmpty()) {
+                List<Task> foundTasks = new ArrayList<>();
+
+                switch (searchType) {
+                    case "ID":
+                        try {
+                            int id = Integer.parseInt(searchValue.trim());
+                            Task task = todoList.getTaskById(id);
+                            if (task != null) {
+                                foundTasks.add(task);
+                            }
+                        } catch (NumberFormatException ex) {
+                            JOptionPane.showMessageDialog(mainFrame,
+                                    "Неверный формат ID! Введите число.",
+                                    "Ошибка",
+                                    JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                        break;
+
+                    case "Название":
+                        foundTasks = todoList.searchTasks(searchValue.trim());
+                        break;
+
+                    case "Категория":
+                        foundTasks = todoList.searchTasksByCategory(searchValue.trim());
+                        break;
+
+                    case "Статус":
+                        foundTasks = todoList.getTasksByStatus(searchValue.trim().toUpperCase());
+                        break;
+                }
+
+                if (foundTasks.isEmpty()) {
+                    JOptionPane.showMessageDialog(mainFrame,
+                            "Задачи не найдены по вашему запросу.",
+                            "Результаты поиска",
+                            JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    refreshTasksTableWithData(foundTasks);
+                    JOptionPane.showMessageDialog(mainFrame,
+                            "Найдено задач: " + foundTasks.size(),
+                            "Результаты поиска",
+                            JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        }
+    }
+    // Обновление таблицы с переданным списком задач
+    private void refreshTasksTableWithData(List<Task> tasks) {
+        tableModel.setRowCount(0);
+
+        for (Task task : tasks) {
+            Object[] rowData = {
+                    task.getId(),
+                    task.getTitle(),
+                    task.getDescription(),
+                    task.getStatus(),
+                    task.getPriority(),
+                    task.getCategory(),
+                    task.getDueDate() != null ?
+                            task.getDueDate().format(java.time.format.DateTimeFormatter.ofPattern("dd.MM.yyyy")) :
+                            "Нет",
+                    task.isOverdue() ? "Да" : "Нет"
+            };
+            tableModel.addRow(rowData);
+        }
+    }
+
+    // Выбор важных задач
+    private void showImportantTasksDialog() {
+        String[] options = {"Важное", "Просроченное"};
+
+        String choice = (String) JOptionPane.showInputDialog(
+                mainFrame,
+                "Выберите тип задач для отображения:",
+                "Важные задачи",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[0]
+        );
+
+        if (choice != null) {
+            List<Task> filteredTasks;
+            String message;
+
+            switch (choice) {
+                case "Важное":
+                    filteredTasks = todoList.getImportantTasks();
+                    message = "важные задачи (приоритет 4-5)";
+                    break;
+                case "Просроченное":
+                    filteredTasks = todoList.getOverdueTasks();
+                    message = "просроченные задачи";
+                    break;
+                default:
+                    filteredTasks = todoList.getAllTasks();
+                    message = "все задачи";
+            }
+
+            if (filteredTasks.isEmpty()) {
+                JOptionPane.showMessageDialog(mainFrame,
+                        choice + " задачи не найдены!",
+                        "Результат",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                refreshTasksTableWithData(filteredTasks);
+                JOptionPane.showMessageDialog(mainFrame,
+                        "Показаны " + message + ": " + filteredTasks.size() + " шт.",
+                        "Результат",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+    }
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
