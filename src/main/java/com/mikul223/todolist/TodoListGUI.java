@@ -48,11 +48,37 @@ public class TodoListGUI {
         imagePanel.setBackground(new Color(240, 240, 240));
         imagePanel.setPreferredSize(new Dimension(300, 200)); // Место для картинки
         imagePanel.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
-        // Временная картинка
+     /*   // Временная картинка
         JLabel imagePlaceholder = new JLabel("png", JLabel.CENTER);
         imagePlaceholder.setFont(new Font("Arial", Font.ITALIC, 14));
         imagePlaceholder.setForeground(Color.GRAY);
         imagePanel.add(imagePlaceholder);
+        centerPanel.add(imagePanel, BorderLayout.CENTER);
+
+      */
+        // Картинка из файла
+
+        try {
+            java.net.URL imageUrl = getClass().getResource("/com/mikul223/todolist/resources/кот.png");
+
+            if (imageUrl != null) {
+                ImageIcon originalIcon = new ImageIcon(imageUrl);
+                Image scaledImage = originalIcon.getImage().getScaledInstance(250, 250, Image.SCALE_SMOOTH);
+                JLabel imageLabel = new JLabel(new ImageIcon(scaledImage), JLabel.CENTER);
+                imagePanel.add(imageLabel);
+                System.out.println( imageUrl);
+            } else {
+                throw new Exception("Картинка не найдена по пути: /com/mikul223/todolist/resources/кот.png");
+            }
+
+        } catch (Exception e) {
+
+            System.out.println("Проблема с загрузкой картинки :( " + e.getMessage());
+            JLabel imageLabel = new JLabel("Тут должен быть котик :3", JLabel.CENTER);
+            imageLabel.setFont(new Font("Arial", Font.BOLD, 16));
+            imageLabel.setForeground(new Color(89, 146, 195));
+            imagePanel.add(imageLabel);
+        }
         centerPanel.add(imagePanel, BorderLayout.CENTER);
 
         // Панель с кнопками
