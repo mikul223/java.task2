@@ -3,8 +3,13 @@ package com.mikul223.todolist;
 import java.time.LocalDate;
 import java.util.*;
 
-
-
+/*
+public enum TaskStatus {
+    TODO,
+    IN_PROGRESS,
+    DONE
+}
+*/
 
 
 public class TodoList {
@@ -58,8 +63,11 @@ public class TodoList {
 
     public List<TTask> getTasksByStatus(String status) {
         List<TTask> result = new ArrayList<>();
+        if (status == null) {
+            return result;
+        }
         for (TTask task : tasks) {
-            if (task.getStatus().equals(status)) {
+            if (status.equals(task.getStatus())) {
                 result.add(task);
             }
         }
@@ -80,7 +88,7 @@ public class TodoList {
     public List<TTask> getImportantTasks() {
         List<TTask> result = new ArrayList<>();
         for (TTask task : tasks) {
-            if (task.getPriority() >= 4) {
+            if (task.getPriority() >= TTask.HIGH_PRIORITY_THRESHOLD) {
                 result.add(task);
             }
         }
@@ -127,14 +135,20 @@ public class TodoList {
 
     public List<TTask> searchTasks(String search) {
         List<TTask> result = new ArrayList<>();
+        if (search == null) {
+            return result;
+        }
+        String searchLower = search.toLowerCase();
         for (TTask task : tasks) {
-            if (task.getTitle().toLowerCase().contains(search.toLowerCase())) {
+            if (task.getTitle() != null && task.getTitle().toLowerCase().contains(searchLower)) {
                 result.add(task);
             }
         }
         return result;
     }
 
+
+    //на будущее мб. интерфейс
     public void markTaskDone(int id) {
         TTask task = getTaskById(id);
         if (task != null) {
@@ -197,11 +211,26 @@ public class TodoList {
 
     public List<TTask> searchTasksByCategory(String category) {
         List<TTask> result = new ArrayList<>();
+
+        if (category == null) {
+            return result;
+        }
         for (TTask task : tasks) {
-            if (task.getCategory().equalsIgnoreCase(category)) {
+            if (category.equalsIgnoreCase(task.getCategory())) {
                 result.add(task);
             }
         }
         return result;
     }
+
+    public boolean updateTaskDueDate(int id, LocalDate dueDate) {
+        TTask task = getTaskById(id);
+        if (task != null) {
+            task.setDueDate(dueDate);
+            return true;
+        }
+        return false;
+    }
+
+
 }

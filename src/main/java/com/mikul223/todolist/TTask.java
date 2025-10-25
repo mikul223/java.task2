@@ -5,6 +5,18 @@ import java.time.LocalDateTime;
 
 
 public class TTask {
+
+    public static final int MIN_PRIORITY = 1;
+    public static final int MAX_PRIORITY = 5;
+    public static final int HIGH_PRIORITY_THRESHOLD = 4;
+    public static final int URGENT_DAYS_THRESHOLD = 3;
+    public static final int SOON_DAYS_THRESHOLD = 7;
+    public static final int PRIORITY_WEIGHT = 10;
+    public static final int OVERDUE_BONUS = 20;
+    public static final int URGENT_BONUS = 15;
+    public static final int SOON_BONUS = 5;
+
+
     private int id;
     private String title;
     private String description;
@@ -21,7 +33,7 @@ public class TTask {
         this.title = title;
         this.description = description;
         this.status = "TODO";
-        this.priority = 3;
+        this.priority = (MIN_PRIORITY + MAX_PRIORITY) / 2;
         this.category = "General";
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
@@ -96,7 +108,7 @@ public class TTask {
     }
 
     public void setPriority(int priority) {
-        if (priority >= 1 && priority <= 5) {
+        if (priority >= MIN_PRIORITY && priority <= MAX_PRIORITY) {
             this.priority = priority;
             this.updatedAt = LocalDateTime.now();
         }
@@ -114,7 +126,7 @@ public class TTask {
         return dueDate != null && dueDate.isBefore(LocalDate.now()) && !"DONE".equals(status);
     }
     public boolean isHighPriority() {
-        return priority >= 4;
+        return priority >= HIGH_PRIORITY_THRESHOLD;
     }
 
     public void markAsDone() {
@@ -137,20 +149,20 @@ public class TTask {
     public int getUrgencyScore() {
         int score = 0;
 
-        score += priority * 10;
+        score += priority * PRIORITY_WEIGHT;
 
 
         if (isOverdue()) {
-            score += 20;
+            score += OVERDUE_BONUS;
         }
 
 
         if (dueDate != null) {
             long daysUntilDue = java.time.temporal.ChronoUnit.DAYS.between(LocalDate.now(), dueDate);
-            if (daysUntilDue <= 3) {
-                score += 15;
-            } else if (daysUntilDue <= 7) {
-                score += 5;
+            if (daysUntilDue <= URGENT_DAYS_THRESHOLD) {
+                score += URGENT_BONUS;
+            } else if (daysUntilDue <= SOON_DAYS_THRESHOLD) {
+                score += SOON_BONUS;
             }
         }
 

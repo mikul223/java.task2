@@ -161,7 +161,7 @@ public class Main {
             if (!validDate) {
                 todoList.addTask(title, description);
             } else {
-                System.out.print("Введите приоритет (1-5): ");
+                System.out.print("Введите приоритет (TTask.MIN_PRIORITY-TTask.MAX_PRIORITY): ");
                 int priority = scanner.nextInt();
                 scanner.nextLine();
 
@@ -224,7 +224,7 @@ public class Main {
                 }
                 break;
             case 2:
-                System.out.print("Введите новый приоритет (1-5): ");
+                System.out.print("Введите новый приоритет (TTask.MIN_PRIORITY-TTask.MAX_PRIORITY): ");
                 int priority = scanner.nextInt();
                 scanner.nextLine();
                 if (todoList.updateTaskPriority(id, priority)) {
@@ -258,8 +258,12 @@ public class Main {
                 }
 
                 if (validDate) {
-                    task.setDueDate(dueDate);
-                    System.out.println("Срок выполнения обновлен.");
+                    if (todoList.updateTaskDueDate(id, dueDate)) {
+                        System.out.println("Срок выполнения обновлен.");
+                    }
+                    else {
+                        System.out.println("Ошибка обновления срока выполнения.");
+                    }
                 }
                 break;
             case 0:
@@ -305,7 +309,7 @@ public class Main {
         } else {
             System.out.println("\n    Просроченные задачи    ");
             for (TTask task : overdueTasks) {
-                System.out.println("⚠ " + task);
+                System.out.println("! " + task);
             }
         }
     }
@@ -381,6 +385,10 @@ public class Main {
         System.out.print("Введите категорию для поиска: ");
         String category = scanner.nextLine();
 
+        if (category == null || category.trim().isEmpty()) {
+            System.out.println("Ошибка: категория не может быть пустой");
+            return;
+        }
         List<TTask> tasks = todoList.searchTasksByCategory(category);
         if (tasks.isEmpty()) {
             System.out.println("Задачи в категории '" + category + "' не найдены.");
