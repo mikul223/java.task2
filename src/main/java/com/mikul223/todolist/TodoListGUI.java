@@ -5,6 +5,8 @@ import java.awt.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.ListSelectionModel;
 import java.util.List;
+import java.awt.Color;
+import java.awt.GridLayout;
 
 public class TodoListGUI {
     private JFrame mainFrame;
@@ -15,7 +17,83 @@ public class TodoListGUI {
     public TodoListGUI() {
         this.todoList = new TodoList();
         initializeTestData();
-        initializeGUI();
+        showMainMenu();
+    }
+
+    //Главное меню
+    private void showMainMenu() {
+
+        JFrame menuFrame = new JFrame("Менеджер задач");
+        menuFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        menuFrame.setSize(800, 600);
+        menuFrame.setLocationRelativeTo(null);
+
+        // Основная панель меню
+        JPanel menuPanel = new JPanel(new BorderLayout(20, 20));
+        menuPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 30, 30));
+        menuPanel.setBackground(new Color(240, 240, 240));
+
+        // Заголовок
+        JLabel titleLabel = new JLabel("Менеджер задач", JLabel.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 28));
+        titleLabel.setForeground(new Color(89, 146, 195));
+        menuPanel.add(titleLabel, BorderLayout.NORTH);
+
+        // Центральная панель для картинки и кнопок
+        JPanel centerPanel = new JPanel(new BorderLayout(20, 20));
+        centerPanel.setBackground(new Color(240, 240, 240));
+        // Панель для картинки
+        JPanel imagePanel = new JPanel();
+        imagePanel.setBackground(new Color(240, 240, 240));
+        imagePanel.setPreferredSize(new Dimension(300, 200)); // Место для картинки
+        imagePanel.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200), 1));
+        // Временная картинка
+        JLabel imagePlaceholder = new JLabel("png", JLabel.CENTER);
+        imagePlaceholder.setFont(new Font("Arial", Font.ITALIC, 14));
+        imagePlaceholder.setForeground(Color.GRAY);
+        imagePanel.add(imagePlaceholder);
+        centerPanel.add(imagePanel, BorderLayout.CENTER);
+
+        // Панель с кнопками
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 10, 10));
+        buttonPanel.setBackground(new Color(240, 240, 240));
+        buttonPanel.setPreferredSize(new Dimension(100, 150));
+
+        // Кнопка "Показать задачи"
+        JButton showTasksButton = new JButton("Показать задачи");
+        showTasksButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        showTasksButton.setBackground(new Color(111, 161, 205));
+        showTasksButton.setForeground(Color.WHITE);
+        showTasksButton.setFocusPainted(false);
+        showTasksButton.setPreferredSize(new Dimension(100, 55));
+
+        // Кнопка "Выйти"
+        JButton exitButton = new JButton("Выйти");
+        exitButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        exitButton.setBackground(new Color(26, 67, 97));
+        exitButton.setForeground(Color.WHITE);
+        exitButton.setFocusPainted(false);
+        exitButton.setPreferredSize(new Dimension(100, 55));
+
+        // Добавляем обработчики кнопок
+        showTasksButton.addActionListener(e -> {
+            menuFrame.dispose(); // Закрываем меню
+            showTasksWindow();   // Показываем окно с задачами
+        });
+
+        // Выход из приложения
+        exitButton.addActionListener(e -> {
+            System.exit(0);
+        });
+
+
+        buttonPanel.add(showTasksButton);
+        buttonPanel.add(exitButton);
+        centerPanel.add(buttonPanel, BorderLayout.SOUTH);
+        menuPanel.add(centerPanel, BorderLayout.CENTER);
+
+        menuFrame.add(menuPanel);
+        menuFrame.setVisible(true);
     }
 
 
@@ -52,7 +130,7 @@ public class TodoListGUI {
     }
 
     // Окно
-    private void initializeGUI() {
+    private void showTasksWindow() {
         // Главное окно
         mainFrame = new JFrame("Управление задачами");
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
