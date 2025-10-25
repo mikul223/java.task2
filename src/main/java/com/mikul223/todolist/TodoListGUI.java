@@ -70,7 +70,7 @@ public class TodoListGUI {
         // Кнопка "Выйти"
         JButton exitButton = new JButton("Выйти");
         exitButton.setFont(new Font("Arial", Font.PLAIN, 16));
-        exitButton.setBackground(new Color(26, 67, 97));
+        exitButton.setBackground(new Color(51, 100, 143));
         exitButton.setForeground(Color.WHITE);
         exitButton.setFocusPainted(false);
         exitButton.setPreferredSize(new Dimension(100, 55));
@@ -108,9 +108,7 @@ public class TodoListGUI {
 
     // Обновление данных в таблице
     private void refreshTasksTable() {
-        // Очищаем таблицу
         tableModel.setRowCount(0);
-        // Получаем задачи
 
         java.util.List<Task> tasks = todoList.getAllTasks();
         for (Task task : tasks) {
@@ -153,21 +151,21 @@ public class TodoListGUI {
         };
 
         // Модель таблицы
-        tableModel = new DefaultTableModel(columnNames, 0) { // 0 вместо 40 - пустая таблица
+        tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
 
-        JTable tasksTable = new JTable(tableModel);
+        tasksTable = new JTable(tableModel);
 
-        // Настраиваем внешний вид таблицы
+
+        // Внешний вид таблицы
         tasksTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tasksTable.getTableHeader().setReorderingAllowed(false);
         tasksTable.setRowHeight(25);
 
-        // Настраиваем ширину колонок
         tasksTable.getColumnModel().getColumn(0).setPreferredWidth(40);  // ID
         tasksTable.getColumnModel().getColumn(1).setPreferredWidth(150); // Название
         tasksTable.getColumnModel().getColumn(2).setPreferredWidth(200); // Описание
@@ -179,22 +177,107 @@ public class TodoListGUI {
 
         // Таблица прокручиваема
         JScrollPane tableScrollPane = new JScrollPane(tasksTable);
-        tableScrollPane.setPreferredSize(new Dimension(700, 400));
-
+        tableScrollPane.setPreferredSize(new Dimension(700, 300));
         mainPanel.add(tableScrollPane, BorderLayout.CENTER);
 
-        // Панель с кнопками внизу
-        JPanel bottomPanel = new JPanel(new FlowLayout());
-        bottomPanel.add(new JButton("Добавить задачу"));
-        bottomPanel.add(new JButton("Показать все"));
-        mainPanel.add(bottomPanel, BorderLayout.SOUTH);
 
+
+        //  ПАНЕЛЬ УПРАВЛЕНИЯ
+        JPanel controlPanel = new JPanel(new BorderLayout(10, 10));
+
+        // Верхний ряд кнопок 3 кнопки
+        JPanel topButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+
+        JButton addButton = new JButton("Добавить");
+        addButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        addButton.setBackground(new Color(89, 146, 195));
+        addButton.setForeground(Color.WHITE);
+        addButton.setFocusPainted(false);
+        addButton.setPreferredSize(new Dimension(140, 35));
+
+        JButton editButton = new JButton("Изменить");
+        editButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        editButton.setBackground(new Color(89, 146, 195));
+        editButton.setForeground(Color.WHITE);
+        editButton.setFocusPainted(false);
+        editButton.setPreferredSize(new Dimension(140, 35));
+
+        JButton deleteButton = new JButton("Удалить");
+        deleteButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        deleteButton.setBackground(new Color(51, 100, 143));
+        deleteButton.setForeground(Color.WHITE);
+        deleteButton.setFocusPainted(false);
+        deleteButton.setPreferredSize(new Dimension(140, 35));
+
+        topButtonPanel.add(addButton);
+        topButtonPanel.add(editButton);
+        topButtonPanel.add(deleteButton);
+
+        // Нижний ряд кнопок
+        JPanel bottomButtonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 40, 0));
+
+        // Панель для кнопок "Сортировать" и "Найти"
+        JPanel leftButtonsPanel = new JPanel();
+        leftButtonsPanel.setLayout(new BoxLayout(leftButtonsPanel, BoxLayout.Y_AXIS));
+        leftButtonsPanel.setPreferredSize(new Dimension(150, 80));
+
+        JButton sortButton = new JButton("Сортировать");
+        sortButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        sortButton.setBackground(new Color(89, 146, 195));
+        sortButton.setForeground(Color.WHITE);
+        sortButton.setFocusPainted(false);
+        sortButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        sortButton.setMaximumSize(new Dimension(140, 35));
+
+        JButton searchButton = new JButton("Найти");
+        searchButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        searchButton.setBackground(new Color(89, 146, 195));
+        searchButton.setForeground(Color.WHITE);
+        searchButton.setFocusPainted(false);
+        searchButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        searchButton.setMaximumSize(new Dimension(140, 35));
+
+        leftButtonsPanel.add(Box.createVerticalStrut(5));
+        leftButtonsPanel.add(sortButton);
+        leftButtonsPanel.add(Box.createVerticalStrut(10));
+        leftButtonsPanel.add(searchButton);
+        leftButtonsPanel.add(Box.createVerticalStrut(5));
+
+        // Кнопка "Важное!"
+        JButton importantButton = new JButton("Важное!");
+        importantButton.setFont(new Font("Arial", Font.BOLD, 14));
+        importantButton.setBackground(new Color(51, 100, 143));
+        importantButton.setForeground(Color.WHITE);
+        importantButton.setFocusPainted(false);
+        importantButton.setPreferredSize(new Dimension(120, 70));
+
+        bottomButtonPanel.add(leftButtonsPanel);
+        bottomButtonPanel.add(importantButton);
+
+        controlPanel.add(topButtonPanel, BorderLayout.NORTH);
+        controlPanel.add(bottomButtonPanel, BorderLayout.CENTER);
+
+        // Кнопка "Назад в меню"
+        JPanel backPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JButton backButton = new JButton("Назад в меню");
+        backButton.setFont(new Font("Arial", Font.PLAIN, 12));
+        backButton.setBackground(new Color(108, 117, 125));
+        backButton.setForeground(Color.WHITE);
+        backButton.setFocusPainted(false);
+        backButton.addActionListener(e -> {
+            mainFrame.dispose();
+            showMainMenu();
+        });
+        backPanel.add(backButton);
+
+        controlPanel.add(backPanel, BorderLayout.SOUTH);
+
+        mainPanel.add(controlPanel, BorderLayout.SOUTH);
 
         mainFrame.add(mainPanel);
         mainFrame.setVisible(true);
         refreshTasksTable();
     }
-
 
 
 
