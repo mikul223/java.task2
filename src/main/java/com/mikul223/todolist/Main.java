@@ -20,8 +20,10 @@ public class Main {
 
         // Задачи тестовые
         todoList.addTask("Математика", "Сделать домашнее задание");
-        todoList.addTask("Русский", "Написать сочинение", LocalDate.now().plusDays(7), 4, "Учеба");
-        todoList.addTask("Купить продукты", "Молоко, хлеб, фрукты", LocalDate.now().plusDays(2), 2, "Дом");
+        todoList.addTask("Русский", "Написать сочинение",
+                LocalDate.now().plusDays(7), 4, "Учеба");
+        todoList.addTask("Купить продукты", "Молоко, хлеб, фрукты",
+                LocalDate.now().plusDays(2), 2, "Дом");
 
         showMainMenu();
     }
@@ -113,16 +115,16 @@ public class Main {
     }
 
     private static void showAllTasks() {
-        List<TTask> tasks = todoList.getAllTasks();
+        List<Task> tasks = todoList.getAllTasks();
         if (tasks.isEmpty()) {
             System.out.println("Список задач пуст :(");
-        }
-        else {
+        } else {
             System.out.println("\n    Все задачи    ");
-            for (TTask task : tasks) {
+            for (Task task : tasks) {
                 System.out.println(task);
             }
-            System.out.println("Всего задач: " + todoList.getTotalTasks() + ", выполнено: " + todoList.getCompletedCount());
+            System.out.println("Всего задач: " + todoList.getTotalTasks() +
+                    ", выполнено: " + todoList.getCompletedCount());
         }
     }
 
@@ -164,8 +166,7 @@ public class Main {
             }
             if (!validDate) {
                 todoList.addTask(title, description);
-            }
-            else {
+            } else {
                 System.out.print("Введите приоритет (TTask.MIN_PRIORITY-TTask.MAX_PRIORITY): ");
                 int priority = scanner.nextInt();
                 scanner.nextLine();
@@ -175,8 +176,7 @@ public class Main {
 
                 todoList.addTask(title, description, dueDate, priority, category);
             }
-        }
-        else {
+        } else {
             todoList.addTask(title, description);
         }
         System.out.println("Задача добавлена успешно! :)");
@@ -188,11 +188,10 @@ public class Main {
         int id = scanner.nextInt();
         scanner.nextLine();
 
-        TTask task = todoList.getTaskById(id);
+        Task task = todoList.getTaskById(id);
         if (task != null) {
             System.out.println("Найдена задача: " + task);
-        }
-        else {
+        } else {
             System.out.println("Задача с ID " + id + " не найдена :(");
         }
     }
@@ -203,7 +202,7 @@ public class Main {
         int id = scanner.nextInt();
         scanner.nextLine();
 
-        TTask task = todoList.getTaskById(id);
+        Task task = todoList.getTaskById(id);
         if (task == null) {
             System.out.println("Задача не найдена :(");
             return;
@@ -230,9 +229,26 @@ public class Main {
                 }
                 break;
             case 2:
-                System.out.print("Введите новый приоритет (TTask.MIN_PRIORITY-TTask.MAX_PRIORITY): ");
-                int priority = scanner.nextInt();
-                scanner.nextLine();
+                int priority =0;
+                boolean validPriority = false;
+                while (!validPriority) {
+                    try {
+                        System.out.printf("Введите приоритет (%d-%d): ",
+                                Task.MIN_PRIORITY, Task.MAX_PRIORITY);
+                        priority = scanner.nextInt();
+                        scanner.nextLine();
+
+                        if (priority >= Task.MIN_PRIORITY && priority <= Task.MAX_PRIORITY) {
+                            validPriority = true;
+                        } else {
+                            System.out.printf("Ошибка: приоритет должен быть от %d до %d",
+                                    Task.MIN_PRIORITY, Task.MAX_PRIORITY);
+                        }
+                    } catch (java.util.InputMismatchException e) {
+                        System.out.println("Ошибка: введите целое число!");
+                        scanner.nextLine();
+                    }
+                }
                 if (todoList.updateTaskPriority(id, priority)) {
                     System.out.println("Приоритет обновлен :)");
                 } else {
@@ -266,8 +282,7 @@ public class Main {
                 if (validDate) {
                     if (todoList.updateTaskDueDate(id, dueDate)) {
                         System.out.println("Срок выполнения обновлен.");
-                    }
-                    else {
+                    } else {
                         System.out.println("Ошибка обновления срока выполнения :(");
                     }
                 }
@@ -297,75 +312,72 @@ public class Main {
         System.out.print("Введите статус (TODO/IN_PROGRESS/DONE): ");
         String status = scanner.nextLine();
 
-        List<TTask> tasks = todoList.getTasksByStatus(status);
+        List<Task> tasks = todoList.getTasksByStatus(status);
         if (tasks.isEmpty()) {
             System.out.println("Задачи с статусом '" + status + "' не найдены :(");
         } else {
             System.out.println("\n    Задачи со статусом '" + status + "'    ");
-            for (TTask task : tasks) {
+            for (Task task : tasks) {
                 System.out.println(task);
             }
         }
     }
 
     private static void showOverdueTasks() {
-        List<TTask> overdueTasks = todoList.getOverdueTasks();
+        List<Task> overdueTasks = todoList.getOverdueTasks();
         if (overdueTasks.isEmpty()) {
             System.out.println("Просроченных задач нет! :)");
         } else {
             System.out.println("\n    Просроченные задачи    ");
-            for (TTask task : overdueTasks) {
+            for (Task task : overdueTasks) {
                 System.out.println("! " + task);
             }
         }
     }
 
     private static void showImportantTasks() {
-        List<TTask> importantTasks = todoList.getImportantTasks();
+        List<Task> importantTasks = todoList.getImportantTasks();
         if (importantTasks.isEmpty()) {
             System.out.println("Важных задач нет! :)");
         } else {
             System.out.println("\n    Важные задачи    ");
-            for (TTask task : importantTasks) {
+            for (Task task : importantTasks) {
                 System.out.println(task);
             }
         }
     }
 
     private static void showTasksSortedByPriority() {
-        List<TTask> sortedTasks = todoList.sortByPriority();
+        List<Task> sortedTasks = todoList.sortByPriority();
         if (sortedTasks.isEmpty()) {
             System.out.println("Список задач пуст :(");
-        }
-        else {
+        } else {
             System.out.println("\n   Задачи отсортированные по приоритету    ");
-            for (TTask task : sortedTasks) {
+            for (Task task : sortedTasks) {
                 System.out.println(task);
             }
         }
     }
 
     private static void showTasksSortedByUrgency() {
-        List<TTask> sortedTasks = todoList.sortByUrgency();
+        List<Task> sortedTasks = todoList.sortByUrgency();
         if (sortedTasks.isEmpty()) {
             System.out.println("Список задач пуст :(");
-        }
-        else {
+        } else {
             System.out.println("\n    Задачи отсортированные по срочности    ");
-            for (TTask task : sortedTasks) {
+            for (Task task : sortedTasks) {
                 System.out.println("[" + task.getUrgencyScore() + "] " + task);
             }
         }
     }
 
     private static void showTasksSortedByDueDate() {
-        List<TTask> sortedTasks = todoList.sortByDueDate();
+        List<Task> sortedTasks = todoList.sortByDueDate();
         if (sortedTasks.isEmpty()) {
             System.out.println("Список задач пуст :(");
-        }
-        else {
+        } else {
             System.out.println("\n   Задачи отсортированные по дате выполнения    ");
-            for (TTask task : sortedTasks) {
+            for (Task task : sortedTasks) {
                 System.out.println(task);
             }
         }
@@ -375,13 +387,12 @@ public class Main {
         System.out.print("Введите ключевое слово для поиска: ");
         String keyword = scanner.nextLine();
 
-        List<TTask> tasks = todoList.searchTasks(keyword);
+        List<Task> tasks = todoList.searchTasks(keyword);
         if (tasks.isEmpty()) {
             System.out.println("Задачи не найдены :(");
-        }
-        else {
+        } else {
             System.out.println("\n   Результаты поиска    ");
-            for (TTask task : tasks) {
+            for (Task task : tasks) {
                 System.out.println(task);
             }
         }
@@ -395,13 +406,12 @@ public class Main {
             System.out.println("Ошибка: категория не может быть пустой");
             return;
         }
-        List<TTask> tasks = todoList.searchTasksByCategory(category);
+        List<Task> tasks = todoList.searchTasksByCategory(category);
         if (tasks.isEmpty()) {
             System.out.println("Задачи в категории '" + category + "' не найдены :(");
-        }
-        else {
+        } else {
             System.out.println("\n Задачи в категории '" + category + "' ");
-            for (TTask task : tasks) {
+            for (Task task : tasks) {
                 System.out.println(task);
             }
         }

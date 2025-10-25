@@ -3,12 +3,8 @@ package com.mikul223.todolist;
 import java.time.LocalDate;
 import java.util.*;
 
-
-
-
-
 public class TodoList {
-    private List<TTask> tasks;
+    private List<Task> tasks;
     private int nextId;
 
     public TodoList() {
@@ -18,26 +14,27 @@ public class TodoList {
 
     //Методы добавления задач
     public void addTask(String title, String description) {
-        TTask task = new TTask(nextId, title, description);
+        Task task = new Task(nextId, title, description);
         tasks.add(task);
         nextId++;
     }
 
 
-    public void addTask(String title, String description, LocalDate dueDate, int priority, String category) {
-        TTask task = new TTask(nextId, title, description, dueDate, priority, category);
+    public void addTask(String title, String description, LocalDate dueDate,
+                        int priority, String category) {
+        Task task = new Task(nextId, title, description, dueDate, priority, category);
         tasks.add(task);
         nextId++;
     }
-    public List<TTask> getAllTasks() {
+    public List<Task> getAllTasks() {
         return tasks;
     }
 
 
 
     //Поиск задачи по ID
-    public TTask getTaskById(int id) {
-        for (TTask task : tasks) {
+    public Task getTaskById(int id) {
+        for (Task task : tasks) {
             if (task.getId() == id) {
                 return task;
             }
@@ -47,7 +44,7 @@ public class TodoList {
 
 
     public boolean deleteTask(int id) {
-        TTask task = getTaskById(id);
+        Task task = getTaskById(id);
         if (task != null) {
             tasks.remove(task);
             return true;
@@ -56,12 +53,12 @@ public class TodoList {
     }
 
     //Получение задач по статусу
-    public List<TTask> getTasksByStatus(String status) {
-        List<TTask> result = new ArrayList<>();
+    public List<Task> getTasksByStatus(String status) {
+        List<Task> result = new ArrayList<>();
         if (status == null) {
             return result;
         }
-        for (TTask task : tasks) {
+        for (Task task : tasks) {
             if (status.equals(task.getStatus())) {
                 result.add(task);
             }
@@ -70,9 +67,9 @@ public class TodoList {
     }
 
 
-    public List<TTask> getOverdueTasks() {
-        List<TTask> result = new ArrayList<>();
-        for (TTask task : tasks) {
+    public List<Task> getOverdueTasks() {
+        List<Task> result = new ArrayList<>();
+        for (Task task : tasks) {
             if (task.isOverdue()) {
                 result.add(task);
             }
@@ -80,10 +77,10 @@ public class TodoList {
         return result;
     }
 
-    public List<TTask> getImportantTasks() {
-        List<TTask> result = new ArrayList<>();
-        for (TTask task : tasks) {
-            if (task.getPriority() >= TTask.HIGH_PRIORITY_THRESHOLD) {
+    public List<Task> getImportantTasks() {
+        List<Task> result = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getPriority() >= Task.HIGH_PRIORITY_THRESHOLD) {
                 result.add(task);
             }
         }
@@ -91,12 +88,12 @@ public class TodoList {
     }
 
     // Сортировка пузырьком по приоритету (по убыванию)
-    public List<TTask> sortByPriority() {
-        List<TTask> sorted = new ArrayList<>(tasks);
+    public List<Task> sortByPriority() {
+        List<Task> sorted = new ArrayList<>(tasks);
         for (int i = 0; i < sorted.size() - 1; i++) {
             for (int j = i + 1; j < sorted.size(); j++) {
                 if (sorted.get(i).getPriority() < sorted.get(j).getPriority()) {
-                    TTask temp = sorted.get(i);
+                    Task temp = sorted.get(i);
                     sorted.set(i, sorted.get(j));
                     sorted.set(j, temp);
                 }
@@ -106,8 +103,8 @@ public class TodoList {
     }
 
     // Сортировка по срочности
-    public List<TTask> sortByUrgency() {
-        List<TTask> sorted = new ArrayList<>(tasks);
+    public List<Task> sortByUrgency() {
+        List<Task> sorted = new ArrayList<>(tasks);
         sorted.sort((t1, t2) -> {
             int score1 = t1.getUrgencyScore();
             int score2 = t2.getUrgencyScore();
@@ -117,8 +114,8 @@ public class TodoList {
     }
 
     // Сортировка по дате выполнения. Задачи без даты в конец, с датой в начало
-    public List<TTask> sortByDueDate() {
-        List<TTask> sorted = new ArrayList<>(tasks);
+    public List<Task> sortByDueDate() {
+        List<Task> sorted = new ArrayList<>(tasks);
         sorted.sort((t1, t2) -> {
             if (t1.getDueDate() == null && t2.getDueDate() == null) return 0;
             if (t1.getDueDate() == null) return 1;
@@ -129,13 +126,13 @@ public class TodoList {
     }
 
     //Поиск задач по названию
-    public List<TTask> searchTasks(String search) {
-        List<TTask> result = new ArrayList<>();
+    public List<Task> searchTasks(String search) {
+        List<Task> result = new ArrayList<>();
         if (search == null) {
             return result;
         }
         String searchLower = search.toLowerCase();
-        for (TTask task : tasks) {
+        for (Task task : tasks) {
             if (task.getTitle() != null && task.getTitle().toLowerCase().contains(searchLower)) {
                 result.add(task);
             }
@@ -161,7 +158,7 @@ public class TodoList {
 
     public int getCompletedCount() {
         int count = 0;
-        for (TTask task : tasks) {
+        for (Task task : tasks) {
             if ("DONE".equals(task.getStatus())) {
                 count++;
             }
@@ -172,7 +169,7 @@ public class TodoList {
 
     // Обновление статуса с обработкой исключений
     public boolean updateTaskStatus(int id, String status) {
-        TTask task = getTaskById(id);
+        Task task = getTaskById(id);
         if (task != null) {
             try {
                 task.setStatus(status);
@@ -189,7 +186,7 @@ public class TodoList {
     //Обновление приоритета с обработкой исключений
 
     public boolean updateTaskPriority(int id, int priority) {
-        TTask task = getTaskById(id);
+        Task task = getTaskById(id);
         if (task != null) {
             try {
                 task.setPriority(priority);
@@ -206,13 +203,13 @@ public class TodoList {
 
     //Поиск по категории (регистронезависимый)
 
-    public List<TTask> searchTasksByCategory(String category) {
-        List<TTask> result = new ArrayList<>();
+    public List<Task> searchTasksByCategory(String category) {
+        List<Task> result = new ArrayList<>();
 
         if (category == null) {
             return result;
         }
-        for (TTask task : tasks) {
+        for (Task task : tasks) {
             if (category.equalsIgnoreCase(task.getCategory())) {
                 result.add(task);
             }
@@ -221,7 +218,7 @@ public class TodoList {
     }
 
     public boolean updateTaskDueDate(int id, LocalDate dueDate) {
-        TTask task = getTaskById(id);
+        Task task = getTaskById(id);
         if (task != null) {
             task.setDueDate(dueDate);
             return true;
