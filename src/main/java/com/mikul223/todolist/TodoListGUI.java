@@ -4,13 +4,51 @@ import javax.swing.*;
 import java.awt.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.ListSelectionModel;
-
+import java.util.List;
 
 public class TodoListGUI {
     private JFrame mainFrame;
+    private JTable tasksTable;
+    private DefaultTableModel tableModel;
+    private TodoList todoList;
 
     public TodoListGUI() {
+        this.todoList = new TodoList();
+        initializeTestData();
         initializeGUI();
+    }
+
+
+    //Тестовые задачи
+    private void initializeTestData() {
+        todoList.addTask("Математика", "Сделать домашнее задание");
+        todoList.addTask("Русский", "Написать сочинение",
+                java.time.LocalDate.now().plusDays(7), 4, "Учеба");
+        todoList.addTask("Купить продукты", "Молоко, хлеб, фрукты",
+                java.time.LocalDate.now().plusDays(2), 2, "Дом");
+    }
+
+    // Обновление данных в таблице
+    private void refreshTasksTable() {
+        // Очищаем таблицу
+        tableModel.setRowCount(0);
+        // Получаем задачи
+
+        java.util.List<Task> tasks = todoList.getAllTasks();
+        for (Task task : tasks) {
+            Object[] rowData = {
+                    task.getId(),
+                    task.getTitle(),
+                    task.getDescription(),
+                    task.getStatus(),
+                    task.getPriority(),
+                    task.getCategory(),
+                    task.getDueDate() != null ?
+                            task.getDueDate().format(java.time.format.DateTimeFormatter.ofPattern("dd.MM.yyyy")) :
+                            "Нет", task.isOverdue() ? "Да" : "Нет"
+            };
+            tableModel.addRow(rowData);
+        }
     }
 
     // Окно
@@ -37,10 +75,10 @@ public class TodoListGUI {
         };
 
         // Модель таблицы
-        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 40) {
+        tableModel = new DefaultTableModel(columnNames, 0) { // 0 вместо 40 - пустая таблица
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Редактирование в таблице запрещено
+                return false;
             }
         };
 
@@ -76,6 +114,7 @@ public class TodoListGUI {
 
         mainFrame.add(mainPanel);
         mainFrame.setVisible(true);
+        refreshTasksTable();
     }
 
 

@@ -74,8 +74,17 @@ public class Task {
     public String getCategory() {
         return category;
     }
+    public String getDescription() {
+        return description;
+    }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
 
 
     //Сеттеры с обновлением времени изменения
